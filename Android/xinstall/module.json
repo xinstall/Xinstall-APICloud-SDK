@@ -1,0 +1,8 @@
+{
+	"name":"xinstallD",
+	"class":"com.shubao.modulexinstall.XinstallDelegate"
+},
+{
+	"name":"xinstall",
+	"class":"com.shubao.modulexinstall.XinstallModule"
+}
