@@ -1,18 +1,8 @@
-<p style="color: #ccc; margin-bottom: 30px;">来自于：Xinstall 官方<a style="background-color: #95ba20; color:#fff; padding:4px 8px;border-radius:5px;margin-left:30px; margin-bottom:0px; font-size:12px;text-decoration:none;" target="_blank" href="//www.apicloud.com/mod_detail/xinstall">立即使用</a></p>
-
-<div class="outline">
-[addWakeUpEventListener](#a1)
-[addInstallEventListener](#a2)
-[reportRegister](#a3)
-[reportEventPoint](#a4)
-</div>
-
-
 #APICloud接入
 
 #**一、概述**
 
-Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store](https://www.apicloud.com/mod_detail/123029) 中找到Xinstall模块，让你应用快速集成Xinstall 模块。
+Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store](https://www.apicloud.com/modulestore) 中找到Xinstall模块，让你应用快速集成Xinstall 模块。
 
 本模块封装了 Xinstall 官方SDK，是集智能传参、快速安装、一键拉起、客户来源统计等功能，帮您提高拉新转化率、安装率和多元化精确统计渠道效果的产品。为用户提供点击、安装、注册、留存、活跃等等精准统计报表，并可实时排重，杜绝渠道流量猫腻，大大降低运营成本。
 具体详细介绍可前往 [Xinstall 官网](https://xinstall.com/) 进行查看。
@@ -58,7 +48,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 **字段介绍：**
 
 * internet：添加网络权限
-* urlScheme：如需使用一键拉起功能则必须配置。urlScheme 的 value 值详细获取位置：Xinstall 应用控制台-> Android集成-> 功能集成 中获取
+* urlScheme：如需使用一键拉起功能则必须配置。urlScheme 的 value 值详细获取位置：Xinstall 应用控制台 -> Android下载配置 中获取
 * com.xinstall.APP_KEY：（必须配置）模块接入前准备工作时，从 Xinstall 平台获取的 AppKey
 
 **示例图片（示例图片中开发工具均为 APICloud Studio 3）：**
@@ -133,17 +123,17 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 **示例图片（Android 端）：**
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step9.png" />
 
-上传完包后，需要进入 「iOS应用适配」和「Android应用配置」中选择下载的包的版本
+上传完包后，需要进入「iOS下载配置」和「Android下载配置」中选择下载的包的版本
 
 **示例图片（iOS 端）：**
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step10.png" />
-<img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step11.png" />
 
 **示例图片（Android 端）：**
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step12.png" />
-<img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step13.png" />
 
-> 注意：每次上传完新的 ipa 或者 apk 包后，均需要进入「iOS应用适配」和「Android应用配置」中重新选择下载的包的版本
+> 注意：每次上传完新的 ipa 或者 apk 包后，均需要进入「iOS下载配置」和「Android下载配置」中重新选择下载的包的版本
+
+
 
 
 # **三、如何使用**
@@ -158,8 +148,6 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 > 注意：调用该功能对应接口时需要在 Xinstall 中为对应 App 开通专业版服务
 
 在 APP 需要安装参数时（由 web 网页中传递过来的，如邀请码、游戏房间号等动态参数），调用此接口，在回调中获取web中传递过来的参数，参数在App被一键唤起（拉起），或在快速下载第一次打开应用时候，会传递过来，App端可以分别从`addWakeUpEventListener `和`addInstallEventListener `两个方法中进行获取
-
-<div id="a1"></div>
 
 ## **addWakeUpEventListener**
 
@@ -179,7 +167,7 @@ ret:
 
 内部字段：
 
-```json
+```
 // 如果唤醒时没有携带任何参数，result 为一个空 json 对象：
 {}
 
@@ -188,7 +176,7 @@ ret:
     "channelCode":"渠道编号",  // 字符串类型。渠道编号，没有渠道编号时为 ""
     "data":{                                    // 对象类型。唤起时携带的参数。
         "co":{                              // co 为唤醒页面中通过 Xinstall Web SDK 中的点击按钮传递的数据，key & value 均可自定义，key & value 数量不限制
-            "自定义key1":"自定义value1", 
+            "自定义key1":"自定义value1",
             "自定义key2":"自定义value2"
         },
         "uo":{                              // uo 为唤醒页面 URL 中 ? 后面携带的标准 GET 参数，key & value 均可自定义，key & value 数量不限制
@@ -209,7 +197,7 @@ api.addEventListener({
 },function(ret,err){
   xinstall.addWakeUpEventListener({'uri': ret}, function(ret, err) { // 唤醒参数
     // 回调函数将在合适的时机被调用，这里编写拿到渠道编号以及携带参数后的业务逻辑代码
-    
+
     // 空对象时代表唤醒了，但是没有任何参数传递进来
     if (JSON.stringify(ret) == '{}') {
       // 业务逻辑
@@ -220,7 +208,7 @@ api.addEventListener({
       var uo = data.uo;
       // 根据获取到的数据做对应业务逻辑
     }
-    
+
   });
 });
 ```
@@ -234,8 +222,6 @@ api.addEventListener({
 Android系统，iOS系统
 
 可提供的 1.1.0 及更高版本
-
-<div id="a2"></div>
 
 ## **addInstallEventListener**
 
@@ -255,7 +241,7 @@ ret:
 
 内部字段：
 
-```json
+```
 // 如果没有获取到安装时携带的参数，result 为一个空 json 对象：
 {}
 
@@ -264,7 +250,7 @@ ret:
     "channelCode":"渠道编号",  // 字符串类型。渠道编号，没有渠道编号时为 ""
     "data":{                                    // 对象类型。安装时携带的参数。
         "co":{                              // co 为唤醒页面中通过 Xinstall Web SDK 中的点击按钮传递的数据，key & value 均可自定义，key & value 数量不限制
-            "自定义key1":"自定义value1", 
+            "自定义key1":"自定义value1",
             "自定义key2":"自定义value2"
         },
         "uo":{                              // uo 为唤醒页面 URL 中 ? 后面携带的标准 GET 参数，key & value 均可自定义，key & value 数量不限制
@@ -318,8 +304,6 @@ Android系统，iOS系统
 
 在业务中合适的时机（一般指用户注册）调用指定方法上报注册量
 
-<div id="a3"></div>
-
 ## **reportRegister**
 
 **示例代码**
@@ -353,8 +337,6 @@ Android系统，iOS系统
 事件统计，主要用来统计终端用户对于某些特殊业务的使用效果，如充值金额，分享次数，广告浏览次数等等。
 
 调用接口前，需要先进入 Xinstall 管理后台**事件统计**然后点击新增事件。
-
-<div id="a4"></div>
 
 ## **reportEventPoint**
 
