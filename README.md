@@ -1,3 +1,13 @@
+<p style="color: #ccc; margin-bottom: 30px;">来自于：Xinstall 官方<a style="background-color: #95ba20; color:#fff; padding:4px 8px;border-radius:5px;margin-left:30px; margin-bottom:0px; font-size:12px;text-decoration:none;" target="_blank" href="//www.apicloud.com/mod_detail/xinstall">立即使用</a></p>
+
+<div class="outline">
+[addWakeUpEventListener](#a1)
+[addInstallEventListener](#a2)
+[reportRegister](#a3)
+[reportEventPoint](#a4)
+</div>
+
+
 #APICloud接入
 
 #**一、概述**
@@ -35,6 +45,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 ###**3.1、配置 config.xml 文件**
 **配置示例：**
+
 ```xml
 <permission name="internet" />
 <preference name="urlScheme" value="将这里替换成 Xinstall 官方自动分配的 scheme" />
@@ -149,6 +160,8 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 在 APP 需要安装参数时（由 web 网页中传递过来的，如邀请码、游戏房间号等动态参数），调用此接口，在回调中获取web中传递过来的参数，参数在App被一键唤起（拉起），或在快速下载第一次打开应用时候，会传递过来，App端可以分别从`addWakeUpEventListener `和`addInstallEventListener `两个方法中进行获取
 
+<div id="a1"></div>
+
 ## **addWakeUpEventListener**
 
 添加唤醒页面事件监听者。在 JS 中获取到 api 对象（由 APICloud 官方提供）的 appintent 事件回调后，可通过该方法添加监听者。监听回调函数里可保存唤醒参数供后续业务使用。
@@ -167,7 +180,7 @@ ret:
 
 内部字段：
 
-```
+```json
 {
     channelCode: '渠道编号',//渠道编号
     data: '唤醒携带的参数'  //有携带参数，则返回数据，没有则为空
@@ -201,6 +214,8 @@ Android系统，iOS系统
 
 可提供的 1.1.0 及更高版本
 
+<div id="a2"></div>
+
 ## **addInstallEventListener**
 
 添加携带参数安装事件监听者。在 App 启动时（入口程序处，**一般为 apiready 中**）需要通过该方法添加监听者。监听回调函数里可保存安装参数供后续业务使用。
@@ -219,7 +234,7 @@ ret:
 
 内部字段：
 
-```
+```json
 {
     channelCode: '渠道编号',//渠道编号
     data:    '个性化安装携带的参数'
@@ -257,6 +272,8 @@ Android系统，iOS系统
 
 在业务中合适的时机（一般指用户注册）调用指定方法上报注册量
 
+<div id="a3"></div>
+
 ## **reportRegister**
 
 **示例代码**
@@ -291,6 +308,8 @@ Android系统，iOS系统
 
 调用接口前，需要先进入 Xinstall 管理后台**事件统计**然后点击新增事件。
 
+<div id="a4"></div>
+
 ## **reportEventPoint**
 
 **示例代码**
@@ -301,9 +320,9 @@ reportEventPoint({params})
 
 入参内部字段：
 
-eventId： 类型：字符串 描述：效果点ID
+eventId： 类型：字符串 描述：事件ID
 
-eventValue： 类型：数字类型 描述：效果点值，货币以分为单位
+eventValue： 类型：数字类型 描述：事件值，货币以分为单位
 
 **回调说明**：无需传入回调函数
 
