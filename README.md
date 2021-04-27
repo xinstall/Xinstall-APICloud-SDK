@@ -1,6 +1,6 @@
-#APICloud接入
+# APICloud接入
 
-#**一、概述**
+# 一、概述
 
 Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store](https://www.apicloud.com/modulestore) 中找到Xinstall模块，让你应用快速集成Xinstall 模块。
 
@@ -9,7 +9,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step0.png" />
 
-# **二、如何接入**
+# 二、如何接入
 
 ## 1、添加Xinstall模块
 
@@ -27,12 +27,12 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 
 
-## **3、初始化配置**
-** 进入 APICloud 应用的工程，配置工程目录下的 config.xml 文件，配置完毕，必须通过云编译生效，配置方法如下：**
+## 3、初始化配置
+**进入 APICloud 应用的工程，配置工程目录下的 config.xml 文件，配置完毕，必须通过云编译生效，配置方法如下：**
 
 参数：urlScheme、appKey
 
-###**3.1、配置 config.xml 文件**
+### 3.1、配置 config.xml 文件
 **配置示例：**
 
 ```xml
@@ -55,8 +55,8 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step4.png" />
 
 
-###**3.2、Info.plist 相关配置（针对iOS）**
-** 进入 APICloud 应用工程的 res 目录下（该目录与 config.xml 同级）新增 Info.plist 文件，配置完毕，必须通过云编译生效，配置方法如下： **
+### 3.2、Info.plist 相关配置（针对iOS）
+**进入 APICloud 应用工程的 res 目录下（该目录与 config.xml 同级）新增 Info.plist 文件，配置完毕，必须通过云编译生效，配置方法如下：**
 
 **配置示例：**
 ```xml
@@ -73,7 +73,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 **示例图片：**
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step5.png" />
 
-** 补充说明 **
+**补充说明**
 
 如果你的工程中已经在 res 中添加了 Info.plist 文件，则直接在文件的`<dict></dict>`之间添加如下键值对即可：
 ```xml
@@ -81,7 +81,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
   <string>Xinstall 分配给应用的 appkey</string>
 ```
 
-###**3.3、Universal links 相关配置（针对 iOS）**
+### 3.3、Universal links 相关配置（针对 iOS）
 开启 Associated Domains 服务
 
 对于 iOS，为确保能正常使用一键拉起功能，AppID 必须开启 Associated Domains 功能，请到苹果开发者网站，选择 “Certificate, Identifiers & Profiles”，选择 iOS 对应的 AppID，开启 Associated Domains：
@@ -113,7 +113,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 **示例图片：**
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step7.png" />
 
-##**4、导出包上传 Xinstall**
+## 4、导出包上传 Xinstall
 
 代码集成完毕后，需要通过云编译导出 iOS 和 Android 安装包，并上传 Xinstall 控制台里对应的 App：
 
@@ -136,7 +136,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 
 
-# **三、如何使用**
+# 三、如何使用
 
 ### 1、快速下载和一键拉起
 
@@ -149,7 +149,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 在 APP 需要安装参数时（由 web 网页中传递过来的，如邀请码、游戏房间号等动态参数），调用此接口，在回调中获取web中传递过来的参数，参数在App被一键唤起（拉起），或在快速下载第一次打开应用时候，会传递过来，App端可以分别从`addWakeUpEventListener `和`addInstallEventListener `两个方法中进行获取
 
-## **addWakeUpEventListener**
+## addWakeUpEventListener
 
 添加唤醒页面事件监听者。在 JS 中获取到 api 对象（由 APICloud 官方提供）的 appintent 事件回调后，可通过该方法添加监听者。监听回调函数里可保存唤醒参数供后续业务使用。
 
@@ -223,7 +223,7 @@ Android系统，iOS系统
 
 可提供的 1.1.0 及更高版本
 
-## **addInstallEventListener**
+## addInstallEventListener
 
 添加携带参数安装事件监听者。在 App 启动时（入口程序处，**一般为 apiready 中**）需要通过该方法添加监听者。监听回调函数里可保存安装参数供后续业务使用。
 
@@ -296,15 +296,15 @@ Android系统，iOS系统
 可提供的 1.1.0 及更高版本
 
 
-##**4、渠道统计 **
+## 4、渠道统计
 
 > 注意：调用该功能对应接口时需要在 Xinstall 中为对应 App 开通专业版服务
 
-###**4.1、注册量统计 **
+### 4.1、注册量统计 
 
 在业务中合适的时机（一般指用户注册）调用指定方法上报注册量
 
-## **reportRegister**
+## reportRegister
 
 **示例代码**
 
@@ -332,13 +332,13 @@ Android系统，iOS系统
 可提供的 1.1.0 及更高版本
 
 
-### **4.2、事件统计**
+### 4.2、事件统计
 
 事件统计，主要用来统计终端用户对于某些特殊业务的使用效果，如充值金额，分享次数，广告浏览次数等等。
 
 调用接口前，需要先进入 Xinstall 管理后台**事件统计**然后点击新增事件。
 
-## **reportEventPoint**
+## reportEventPoint
 
 **示例代码**
 
@@ -374,11 +374,11 @@ Android系统，iOS系统
 
 可提供的 1.1.4 及更高版本
 
-# **四、如何测试功能**
+# 四、如何测试功能
 
 参考官方文档 [测试集成效果](https://doc.xinstall.com/integrationGuide/comfirm.html)
 
-# **五、更多 Xinstall 进阶功能**
+# 五、更多 Xinstall 进阶功能
 若您想要自定义下载页面，或者查看数据报表等进阶功能，请移步 [Xinstall 官网](https://xinstall.com/) 查看对应文档。
 
 若您在集成过程中如有任何疑问或者困难，可以随时联系 [Xinstall 官方客服](https://url.cn/q0z85YeZ?_type=wpa&qidian=true) 在线解决。
