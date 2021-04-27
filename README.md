@@ -17,7 +17,6 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 本模块封装了 Xinstall 官方SDK，是集智能传参、快速安装、一键拉起、客户来源统计等功能，帮您提高拉新转化率、安装率和多元化精确统计渠道效果的产品。为用户提供点击、安装、注册、留存、活跃等等精准统计报表，并可实时排重，杜绝渠道流量猫腻，大大降低运营成本。
 具体详细介绍可前往 [Xinstall 官网](https://xinstall.com/) 进行查看。
 
-
 <img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step0.png" />
 
 # **二、如何接入**
@@ -86,7 +85,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 ** 补充说明 **
 
-如果你的工程中已经在 res 中添加了 Info.plist 文件，则直接在文件的<dist></dict>之间添加如下键值对即可：
+如果你的工程中已经在 res 中添加了 Info.plist 文件，则直接在文件的`<dict></dict>`之间添加如下键值对即可：
 ```xml
   <key>com.xinstall.APP_KEY</key>
   <string>Xinstall 分配给应用的 appkey</string>
@@ -115,7 +114,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
     <key>com.apple.developer.associated-domains</key><!--固定key值-->
     <array>
      <!--这里换成你在 xinstall 后台的关联域名(Associated Domains)-->
-        <string>applinks:xxxxxx.xinstall.top</string>
+        <string>applinks:xxxxxx.xinstall.net</string>
     </array>
 </dict>
 </plist>
@@ -181,9 +180,22 @@ ret:
 内部字段：
 
 ```json
+// 如果唤醒时没有携带任何参数，result 为一个空 json 对象：
+{}
+
+// 如果唤醒时有任意参数，result 为 json 对象，内部字段为：
 {
-    channelCode: '渠道编号',//渠道编号
-    data: '唤醒携带的参数'  //有携带参数，则返回数据，没有则为空
+    "channelCode":"渠道编号",  // 字符串类型。渠道编号，没有渠道编号时为 ""
+    "data":{                                    // 对象类型。唤起时携带的参数。
+        "co":{                              // co 为唤醒页面中通过 Xinstall Web SDK 中的点击按钮传递的数据，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1", 
+            "自定义key2":"自定义value2"
+        },
+        "uo":{                              // uo 为唤醒页面 URL 中 ? 后面携带的标准 GET 参数，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1",
+            "自定义key2":"自定义value2"
+        }
+    }
 }
 ```
 
@@ -196,10 +208,19 @@ api.addEventListener({
   name:'appintent'
 },function(ret,err){
   xinstall.addWakeUpEventListener({'uri': ret}, function(ret, err) { // 唤醒参数
-  // 回调函数将在合适的时机被调用，这里编写拿到渠道编号以及携带参数后的业务逻辑代码
-  var channelCode = ret.channelCode;
-  var data = ret.data;
-  // ....
+    // 回调函数将在合适的时机被调用，这里编写拿到渠道编号以及携带参数后的业务逻辑代码
+    
+    // 空对象时代表唤醒了，但是没有任何参数传递进来
+    if (JSON.stringify(ret) == '{}') {
+      // 业务逻辑
+    } else {
+      var channelCode = ret.channelCode;
+      var data = ret.data;
+      var co = data.co;
+      var uo = data.uo;
+      // 根据获取到的数据做对应业务逻辑
+    }
+    
   });
 });
 ```
@@ -235,10 +256,24 @@ ret:
 内部字段：
 
 ```json
+// 如果没有获取到安装时携带的参数，result 为一个空 json 对象：
+{}
+
+// 获取到了安装时携带的参数，result 为 json 对象，内部字段为：
 {
-    channelCode: '渠道编号',
-    data: '个性化安装携带的参数',
-  	isFirstFetch: true // true 或 false，代表是否第一次获取到安装参数，只会在第一次获取到时为 true
+    "channelCode":"渠道编号",  // 字符串类型。渠道编号，没有渠道编号时为 ""
+    "data":{                                    // 对象类型。安装时携带的参数。
+        "co":{                              // co 为唤醒页面中通过 Xinstall Web SDK 中的点击按钮传递的数据，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1", 
+            "自定义key2":"自定义value2"
+        },
+        "uo":{                              // uo 为唤醒页面 URL 中 ? 后面携带的标准 GET 参数，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1",
+            "自定义key2":"自定义value2"
+        }
+    },
+    "timeSpan": 12, // 数字类型。代表下载页面上点击开始下载按钮与第一次打开App时的时间间隔，单位为秒
+    "isFirstFetch": true // boolean类型。代表是否为第一次获取到安装参数，只有第一次获取到时为 true
 }
 ```
 
@@ -248,10 +283,19 @@ ret:
 var xinstall = api.require('xinstall');
 xinstall.addInstallEventListener({}, function(ret, err) {
   // 回调函数将在合适的时机被调用，这里编写拿到渠道编号以及携带参数后的业务逻辑代码
-  var channelCode = ret.channelCode;
-  var data = ret.data;
-  var isFirstFetch = ret.isFirstFetch;
-  // ....
+
+  // 空对象时代表没有获取到安装参数
+  if (JSON.stringify(ret) == '{}') {
+    // 业务逻辑
+  } else {
+    var channelCode = ret.channelCode;
+    var data = ret.data;
+    var co = data.co;
+    var uo = data.uo;
+    var timeSpan = ret.timeSpan;
+    var isFirstFetch = ret.isFirstFetch;
+    // 根据获取到的数据做对应业务逻辑
+  }
 });
 ```
 
