@@ -190,6 +190,11 @@ ret:
 **调用示例**
 
 ```javascript
+// 如果你的应用（安卓端）需要支持在 微信/QQ/QQ浏览器 内通过应用宝拉起，在调用 addWakeUpEventListener 方法前，请先调用一次 openYYBFunction 方法；若不需要支持，则无需调用 openYYBFunction 方法
+var xinstall = api.require('xinstall');
+xinstall.openYYBFunction({});
+
+
 // 请严格遵循如下调用顺序，否则可能导致获取不到唤醒参数
 var xinstall = api.require('xinstall');
 api.addEventListener({
