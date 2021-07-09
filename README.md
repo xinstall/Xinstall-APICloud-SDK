@@ -96,6 +96,8 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 
 该文件是给 iOS 平台配置的文件，在网页工程的 res 目录下（该目录与 config.xml 同级）下创建文件名为 UZApp.entitlements 的文件，UZApp.entitlements 内容如下：
 
+> 注意：一共需要配置2个关联域名
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -103,7 +105,8 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 <dict>
     <key>com.apple.developer.associated-domains</key><!--固定key值-->
     <array>
-     <!--这里换成你在 xinstall 后台的关联域名(Associated Domains)-->
+     <!--以下两个关联域名均换成你在 xinstall 后台的关联域名(Associated Domains)-->
+        <string>applinks:xxxxxx.xinstall.top</string>
         <string>applinks:xxxxxx.xinstall.net</string>
     </array>
 </dict>
@@ -111,7 +114,7 @@ Xinstall支持APICloud平台的模块接入，你可以在 [APICloud模块store]
 ```
 
 **示例图片：**
-<img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.1.0/step7.png" />
+<img src="https://cdn.xinstall.com/APICloud%E7%B4%A0%E6%9D%90/v1.2.4/step7.png" />
 
 ## 4、导出包上传 Xinstall
 
