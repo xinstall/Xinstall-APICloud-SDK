@@ -1,3 +1,17 @@
+<p style="color: #ccc; margin-bottom: 30px;">来自于：Xinstall 官方<a style="background-color: #95ba20; color:#fff; padding:4px 8px;border-radius:5px;margin-left:30px; margin-bottom:0px; font-size:12px;text-decoration:none;" target="_blank" href="//www.apicloud.com/mod_detail/xinstall">立即使用</a></p>
+
+<div class="outline">
+[init](#a0)
+[addInstallEventListener](#a2)
+[addWakeUpEventListener](#a1)
+[reportRegister](#a3)
+[reportEventPoint](#a4)
+[reportShareByXinShareId](#a6)
+[initWithAd](#a5)
+</div>
+
+
+
 
 #APICloud接入
 
@@ -165,6 +179,7 @@ Xinstall 支持 APICloud 平台的模块接入，你可以在 [APICloud 模块St
 >
 > v1.5.0 之前的版本会在启动时自动初始化，无需调用，也无法调用。
 
+<div id="a0"></div>
 
 ## **init**
 
@@ -200,8 +215,11 @@ Android系统，iOS系统
 
 在 APP 需要安装参数时（在 web 中下载并安装 App 完成后，由 web 网页中传递过来的，如邀请码、游戏房间号等动态参数），调用 `addInstallEventListener` 接口添加监听，在回调中获取 web 中传递过来的参数。
 
-在 App 需要唤醒参数时（手机已经安装 App 时，在 web 中直接通过 Universal Links / scheme 一键拉起 App），首先在 App 启动时预先调用 `addWakeUpEventListener` 接口添加监听，在回调中获取 web 中传递过来的参数。
+在 App 需要唤醒参数时（手机已经安装 App 时，在 web 中直接通过 Universal Links / scheme 一键拉起 App），首先在 App 启动时预先调用 `addWakeUpEventListener` 或 `addWakeUpDetailEventListener`接口添加监听，在回调中获取 web 中传递过来的参数。
 
+<div id="a2"></div>
+
+#### 3.1、携带参数安装
 
 ## **addInstallEventListener**
 
@@ -279,6 +297,13 @@ Android系统，iOS系统
 
 可提供的 1.1.0 及更高版本
 
+<div id="a1"></div>
+
+#### 3.2、携带参数唤起
+
+> 您可以在下述两种回调方法中任选一个进行实现，不同的回调方法有不同的逻辑，请选择最符合您实际场景的方法进行实现，请勿同时实现两个方法。
+
+**【方法一】：`addWakeUpEventListener()` 该方法只会在成功获取到拉起参数时，才会回调。如果无法成功获取到拉起参数，例如不是集成了 Xinstall Web SDK 的页面拉起您的 App 时，将会无法获取到拉起参数，也就不会执行该回调方法。**
 
 ## **addWakeUpEventListener**
 
@@ -361,6 +386,116 @@ Android系统，iOS系统
 
 
 
+**【方法二】：`addWakeUpDetailEventListener()` 该方法无论是否成功获取到拉起参数，均会回调。如果成功获取到拉起参数，则 ret != undefined 并且 err == undefined；如果没有获取到拉起参数，则 ret != undefined 并且 error == undefined。**
+
+## addWakeUpDetailEventListener
+
+添加唤醒页面事件监听者。在 JS 中获取到 api 对象（由 APICloud 官方提供）的 appintent 事件回调后，可通过该方法添加监听者。监听回调函数里可保存唤醒参数供后续业务使用。
+
+**示例代码**
+
+addWakeUpDetailEventListener({uri:ret}, callback(ret, err))
+
+**入参说明**：{uri:ret} 为 appintent 事件回调数据
+
+**回调说明**：传入监听回调 callback(ret, err)
+
+ret:
+
+  类型：JSON对象
+
+内部字段：
+
+```json
+// 当获取到唤醒参数时，err 为 undefined，ret 为 json 对象，内部字段为：
+{
+    "channelCode":"渠道编号",  // 字符串类型。渠道编号，没有渠道编号时为 ""
+    "data":{									// 对象类型。唤起时携带的参数。
+        "co":{								// co 为唤醒页面中通过 Xinstall Web SDK 中的点击按钮传递的数据，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1", 
+            "自定义key2":"自定义value2"
+        },
+        "uo":{   							// uo 为唤醒页面 URL 中 ? 后面携带的标准 GET 参数，key & value 均可自定义，key & value 数量不限制
+            "自定义key1":"自定义value1",
+            "自定义key2":"自定义value2"
+        }
+    }
+}
+
+
+// 当没有获取到唤醒参数时，ret 为 undefined，err 为 json 对象，内部字段为：
+{
+    "errorType" : 7,					// 数字类型。代表错误的类型，具体数字对应类型可在下方查看
+    "errorMsg" : "xxxxx"			// 字符串类型。错误的描述
+}
+
+/** errorType 对照表：
+ * iOS
+ * -1 : SDK 配置错误；
+ * 0 : 未知错误；
+ * 1 : 网络错误；
+ * 2 : 没有获取到数据；
+ * 3 : 该 App 已被 Xinstall 后台封禁；
+ * 4 : 该操作不被允许（一般代表调用的方法没有开通权限）；
+ * 5 : 入参不正确；
+ * 6 : SDK 初始化未成功完成；
+ * 7 : 没有通过 Xinstall Web SDK 集成的页面拉起；
+ *
+ * Android
+ * 1006 : 未执行init 方法;
+ * 1007 : 未传入Activity，Activity 未比传参数
+ * 1008 : 用户未知操作 不处理
+ * 1009 : 不是唤醒执行的调用方法
+ * 1010 : 前后两次调起时间小于1s，请求过于频繁
+ * 1011 : 获取调起参数失败
+ * 1012 : 重复获取调起参数
+ * 1013 : 本次调起并非为XInstall的调起
+ * 1004 : 无权限
+ * 1014 : SCHEME URL 为空
+ */
+```
+
+**调用示例**
+
+```javascript
+// 如果你的应用（安卓端）需要支持在 微信/QQ/QQ浏览器 内通过应用宝拉起，在调用 addWakeUpEventListener 方法前，请先调用一次 openYYBFunction 方法；若不需要支持，则无需调用 openYYBFunction 方法
+var xinstall = api.require('xinstall');
+xinstall.openYYBFunction({});
+
+
+// 请严格遵循如下调用顺序，否则可能导致获取不到唤醒参数
+var xinstall = api.require('xinstall');
+api.addEventListener({
+  name:'appintent'
+},function(ret,err){
+  xinstall.addWakeUpDetailEventListener({'uri': ret}, function(ret, err) { // 唤醒参数
+    // 回调函数将在合适的时机被调用，这里编写拿到渠道编号以及唤醒数据后的业务逻辑代码
+	
+    if (ret == undefined) {
+      // 没有获取到唤醒参数，可以根据 err.errorType 和 err.errorMsg 做进一步业务处理
+    } else {
+      var channelCode = ret.channelCode;
+      var data = ret.data;
+      var co = data.co;
+      var uo = data.uo;
+      // 根据获取到的数据做对应业务逻辑
+    }
+  });
+});
+```
+
+**补充说明**
+
+此方法用于获取动态唤醒参数，在拉起 APP 时，获取由 web 网页中传递过来的，如邀请码、游戏房间号等自定义参数，通过预先注册监听后，在回调中获取 web 端传过来的自定义参数。**请严格遵循示例中的调用顺序，否则可能导致获取不到唤醒参数。**
+
+**可用性**
+
+Android系统，iOS系统
+
+可提供的 1.5.2 及更高版本
+
+
+
 ### 4、渠道统计
 
 
@@ -370,6 +505,7 @@ Android系统，iOS系统
 
 在业务中合适的时机（一般指用户注册）调用指定方法上报注册量
 
+<div id="a3"></div>
 
 ## **reportRegister**
 
@@ -405,6 +541,7 @@ Android系统，iOS系统
 
 调用接口前，需要先进入 Xinstall 管理后台**事件统计**然后点击新增事件。
 
+<div id="a4"></div>
 
 ## **reportEventPoint**
 
@@ -443,14 +580,45 @@ Android系统，iOS系统
 可提供的 1.1.4 及更高版本
 
 
+<div id="a6"></div>
+### 5、场景定制统计
 
-### 5、广告平台渠道功能
+#### 5.1 分享统计
+
+场景业务介绍，可到[分享数据统计](https://doc.xinstall.com/environment/分享数据统计.html)页面查看
+
+> 分享统计主要用来统计分享业务相关的数据，例如分享次数、分享查看人数、分享新增用户等。在用户分享操作触发后（注：此处为分享事件触发，非分享完成或成功），可调用如下方法上报一次分享数据：
+
+```javascript
+var xinstall = api.require('xinstall');
+xinstall.reportShareByXinShareId({
+  xinShareId: '填写分享人或UID'
+});
+```
+
+**补充说明**
+
+分享人或UID 可由您自行定义，只需要用以区分用户即可。
+
+您可在 Xinstall 管理后台 对应 App 中查看详细分享数据报表，表中的「分享人/UID」即为调用方法时携带的参数，其余字段含义可将鼠标移到字段右边的小问号上进行查看：
+
+![分享报表](https://doc.xinstall.com/integrationGuide/share.jpg)
+
+**可用性**
+
+Android系统，iOS系统
+
+可提供的 1.5.2 及更高版本
+
+
+
+### 6、广告平台渠道功能
 
 >  如果您在 Xinstall 管理后台对应 App 中，**只使用「自建渠道」，而不使用「广告平台渠道」，则无需进行本小节中额外的集成工作**，也能正常使用 Xinstall 提供的其他功能。
 >
 > 注意：根据目前已有的各大主流广告平台的统计方式，目前 iOS 端和 Android 端均需要用户授权并获取一些设备关键值后才能正常进行 [ 广告平台渠道 ] 的统计，如 IDFA / OAID / GAID 等，对该行为敏感的 App 请慎重使用该功能。
 
-#### 5.1、配置工作
+#### 6.1、配置工作
 
 **iOS 端：**
 
@@ -476,10 +644,11 @@ Android系统，iOS系统
 
 2. 如果使用OAID，因为内部使用反射获取oaid 参数，所以需要外部用户都接入OAID SDK 。具体接入参考[《Android集成指南》](../../AD/AndroidGuide.md)
 
-#### 5.2、更换初始化方法
+#### 6.2、更换初始化方法
 
 **使用新的 initWithAd 方法，替代原先的 init 方法来进行模块的初始化**
 
+<div id="a5"></div>
 
 ## **initWithAd**
 
@@ -496,8 +665,13 @@ Android系统，iOS系统
          </tr>
          <tr>
              <th>idfa</th>
-             <th>字符串</th>
+             <th>string</th>
              <th>iOS 系统中的广告标识符</th>
+         </tr>
+    		 <tr>
+             <th>asa</th>
+             <th>boolean</th>
+             <th>是否开启 ASA 渠道，不需要时可以不传。详见《7、苹果搜索广告（ASA）渠道功能》</th>
          </tr>
      </table>
 
@@ -526,7 +700,7 @@ Android系统，iOS系统
                 <th>GaID(google Ad ID)</th>
             </tr>
         </table>
-
+  
   
 
 **回调说明**：无需传入回调函数
@@ -603,11 +777,11 @@ Android系统，iOS系统
 
 
 
-#### 5.3、上架须知
+#### 6.3、上架须知
 
 **在使用了广告平台渠道后，若您的 App 需要上架，请认真阅读本段内容。**
 
-##### 5.3.1 iOS 端：上架 App Store
+##### 6.3.1 iOS 端：上架 App Store
 
 1. 如果您的 App 没有接入苹果广告（即在 App 中显示苹果投放的广告），那么在提交审核时，在广告标识符中，请按照下图勾选：
 
@@ -642,6 +816,76 @@ Android系统，iOS系统
 最后，在弹出的弹框中，选择 **“是，我们会将设备 ID 用于追踪目的”**，并点击【发布】按钮：
 
 ![AppStore_IDFA_6](https://cdn.xinstall.com/iOS_SDK%E7%B4%A0%E6%9D%90/IDFA_6.png)
+
+
+
+### 7、苹果搜索广告（ASA）渠道功能
+
+>  如果您在 Xinstall 管理后台对应 App 中，**不使用「ASA渠道」，则无需进行本小节中额外的集成工作**，也能正常使用 Xinstall 提供的其他功能。
+
+#### 7.1、更换初始化方法
+
+**使用新的 initWithAd 方法，替代原先的 init 方法来进行模块的初始化**
+
+## **initWithAd**
+
+**入参说明**：需要主动传入参数，JSON对象
+
+入参内部字段：
+
+* iOS 端：
+
+  <table>
+         <tr>
+             <th>参数名</th>
+             <th>参数类型</th>
+             <th>描述 </th>
+         </tr>
+         <tr>
+             <th>idfa</th>
+             <th>string</th>
+             <th>iOS 系统中的广告标识符（不需要时可以不传）</th>
+         </tr>
+         <tr>
+             <th>asa</th>
+             <th>boolean</th>
+             <th>是否开启 ASA 渠道，true 时为开启，false 或者不传时均为不开启</th>
+         </tr>
+     </table>
+
+**回调说明**：无需传入回调函数
+
+**调用示例**
+
+```javascript
+var xinstall = api.require('xinstall');
+// 由于 iOS 和 Android 两端需要传入的参数不同，故需要根据平台进行判断，传入不同的参数
+
+if (api.systemType == "ios") {
+  // 只使用 asa 渠道，不使用广告渠道时，只需要传入 asa 参数
+  Xinstall.initWithAd({asa:true})
+  
+  // 如果需要同时使用广告渠道，那么需要同时传入 idfa 参数，根据《6、广告平台渠道功能》中的方法获取到 idfa 后，再调用初始化方法：
+  // var iAd = api.require('iAd');
+  // iAd.adRequest(function(ret){
+  //   iAd.getIDFA({}, function(ret) {
+  //     Xinstall.initWithAd({idfa:ret.IDFA, asa:true})
+  //   });
+  // });
+} else if (api.systemType == "android") {
+  xinstall.init();
+}
+```
+
+
+
+**可用性**
+
+iOS系统
+
+可提供的 1.5.5 及更高版本
+
+
 
 
 
